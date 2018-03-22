@@ -47,12 +47,19 @@ void ParserWinRC::writeToFile()
     if(file.open(QIODevice::WriteOnly))
     {
         QStringList keys = m_strMap.keys();
+        QString headFileName = QFileInfo(newFileName).fileName().toUpper().replace('.', '_');
+        QString headStr = QString("#ifndef %1\n").arg(headFileName);
+        file.write(headStr.toLocal8Bit());
+        headStr = QString("#define %1\n\n\n\n").arg(headFileName);
+        file.write(headStr.toLocal8Bit());
         for(int i = 0; i < keys.size(); i++)
         {
             QString lineStr = QString("#define     %1        QObject::tr(%2)\n").arg(keys[i]).arg(m_strMap.value(keys[i]));
             file.write(lineStr.toLocal8Bit());
         }
         //QMessageBox::information(this, "", newFileName);
+        headStr = QString("#endif // %1").arg(headFileName);
+        file.write(headStr.toLocal8Bit());
         QMessageBox::warning(nullptr, QString("succss"), newFileName);
     }
     file.flush();

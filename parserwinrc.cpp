@@ -44,13 +44,13 @@ void ParserWinRC::writeToFile()
     QFileInfo fileInfo(m_fileName);
     QString newFileName = fileInfo.path() + "/" + fileInfo.baseName() + ".h";
     QFile file(newFileName);
-    if(file.open(QIODevice::WriteOnly))
+    if(file.open(QIODevice::Truncate | QIODevice::WriteOnly))
     {
         QStringList keys = m_strMap.keys();
         QString headFileName = QFileInfo(newFileName).fileName().toUpper().replace('.', '_');
         QString headStr = QString("#ifndef %1\n").arg(headFileName);
         file.write(headStr.toLocal8Bit());
-        headStr = QString("#define %1\n\n\n\n").arg(headFileName);
+        headStr = QString("#define %1\n\n").arg(headFileName);
         file.write(headStr.toLocal8Bit());
         for(int i = 0; i < keys.size(); i++)
         {
@@ -58,7 +58,7 @@ void ParserWinRC::writeToFile()
             file.write(lineStr.toLocal8Bit());
         }
         //QMessageBox::information(this, "", newFileName);
-        headStr = QString("#endif // %1").arg(headFileName);
+        headStr = QString("\n\n#endif // %1").arg(headFileName);
         file.write(headStr.toLocal8Bit());
         QMessageBox::warning(nullptr, QString("succss"), newFileName);
     }
